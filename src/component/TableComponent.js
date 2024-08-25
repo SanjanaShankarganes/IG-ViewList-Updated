@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 const regions = {
   Coimbatore: {
     districts: {
@@ -128,96 +129,103 @@ function App() {
   const selectedDistrictData = regions[selectedRegion]?.districts[selectedDistrict] || [];
   const selectedPlaceData = selectedDistrictData.find(place => place.motherVillage === selectedPlace);
 
-  const headerText = selectedPlace ? `${selectedPlace} Branch` : '';
+  const headerText = selectedDistrict ? `${selectedDistrict}` : '';
 
   return (
-    <div>
-      <h1>{headerText}</h1>
-      <div>
-        <label>
-          Region:
-          <select value={selectedRegion} onChange={handleRegionChange}>
+    <div className='mx-5 my-2 ig-viewDiv'>
+      <p className="h1 text-center  mt-2 mb-3">{headerText} District</p>
+      <div className="row mb-5" id="ig-filters">
+      <div className="col-lg-3 my-2">
+        <label className="me-sm-2  mb-2">
+          Region: </label>
+          <select className="form-select" value={selectedRegion} onChange={handleRegionChange}>
             <option value="">Select Region</option>
             {Object.keys(regions).map(region => (
               <option key={region} value={region}>{region}</option>
             ))}
-          </select>
-        </label>
-        <label>
-          District:
-          <select value={selectedDistrict} onChange={handleDistrictChange} disabled={!selectedRegion}>
+          </select></div>
+          <div className="col-lg-3 my-2">
+        <label className="me-sm-2  mb-2">
+          District:</label>
+          <select className="form-select" value={selectedDistrict} onChange={handleDistrictChange} disabled={!selectedRegion}>
             <option value="">Select District</option>
             {Object.keys(regions[selectedRegion]?.districts || {}).map(district => (
               <option key={district} value={district}>{district}</option>
             ))}
           </select>
-        </label>
-        <label>
-          Sub-Division:
-          <select value={selectedPlace} onChange={handlePlaceChange} disabled={!selectedDistrict}>
+        </div>
+        <div className="col-lg-3 my-2">
+        <label className="me-sm-2  mb-2">
+          Sub-Division: </label>
+          <select  className="form-select" value={selectedPlace} onChange={handlePlaceChange} disabled={!selectedDistrict}>
             <option value="">Select Division</option>
             {selectedDistrictData.map(place => (
               <option key={place.motherVillage} value={place.motherVillage}>{place.motherVillage}</option>
             ))}
           </select>
-        </label>
-        <label>
-          Police Station:
-          <select value={selectedSubPlace} onChange={handleSubPlaceChange} disabled={!selectedPlace}>
+       </div>
+        <div className="col-lg-3 my-2">
+        <label className="me-sm-2  mb-2">
+          Police Station: </label>
+          <select className="form-select" value={selectedSubPlace} onChange={handleSubPlaceChange} disabled={!selectedPlace}>
             <option value="">Select Police Station</option>
             {selectedPlaceData?.hamletVillage.map(subPlace => (
               <option key={subPlace} value={subPlace}>{subPlace}</option>
             ))}
           </select>
-        </label>
-        <label>
-          Type:
-          <select value={typeFilter} onChange={handleTypeFilter}>
+       </div>
+        <div className="col-lg-2 my-2">
+        <label className="me-sm-2  mb-2">
+          Type:</label>
+          <select  className="form-select" value={typeFilter} onChange={handleTypeFilter}>
             <option value="all">All</option>
             <option value="Private">Private</option>
             <option value="Public">Public</option>
             <option value="Organisation">Organisation</option>
           </select>
-        </label>
-        <label>
-          Status:
-          <select value={statusFilter} onChange={handleStatusFilter}>
+        </div>
+        <div className="col-lg-3 my-2">
+        <label className="me-sm-2  mb-2">
+          Status:</label>
+          <select className="form-select" value={statusFilter} onChange={handleStatusFilter}>
             <option value="all">All</option>
             <option value="COMPLETE">Complete</option>
             <option value="INCOMPLETE">Incomplete</option>
           </select>
-        </label>
+        </div>
+        <div className="col-lg-2 my-2">
         <label>
-          Date:
-          <input type="date" value={selectedDate} onChange={handleDateChange} />
-        </label>
-      </div>
-      <table>
+          Date:</label>
+          <input className="form-control" type="date" value={selectedDate} onChange={handleDateChange} />
+        
+     </div></div>
+     <div className="table-responsive-lg ">
+      <table className="table table-light table-striped table-hover">
         <thead>
           <tr>
-            <th onClick={() => handleSort('id')}>ID</th>
-            <th onClick={() => handleSort('idolId')}>Idol ID</th>
-            <th onClick={() => handleSort('hamletVillage')}>Location of Installation</th>
-            <th onClick={() => handleSort('place')}>Place of Immersion</th>
-            <th onClick={() => handleSort('type')}>Type</th>
-            <th onClick={() => handleSort('date')}>Date of Immersion</th>
-            <th onClick={() => handleSort('status')}>Status</th>
+            <th className="ig-view-table-head" onClick={() => handleSort('id')}>ID</th>
+            <th className="ig-view-table-head" onClick={() => handleSort('idolId')}>Idol ID</th>
+            <th className="ig-view-table-head" onClick={() => handleSort('hamletVillage')}>Location of Installation</th>
+            <th className="ig-view-table-head" onClick={() => handleSort('place')}>Place of Immersion</th>
+            <th className="ig-view-table-head" onClick={() => handleSort('type')}>Type</th>
+            <th className="ig-view-table-head" onClick={() => handleSort('date')}>Date of Immersion</th>
+            <th className="ig-view-table-head" onClick={() => handleSort('status')}>Status</th>
           </tr>
         </thead>
         <tbody>
           {sortedData.map(item => (
             <tr key={item.id}>
-              <td>{item.id}</td>
-              <td>{item.idolId}</td>
-              <td>{item.hamletVillage}</td>
-              <td>{item.place}</td>
-              <td>{item.type}</td>
-              <td>{item.date}</td>
-              <td>{item.status}</td>
+              <td className="ig-view-table-col">{item.id}</td>
+              <td className="ig-view-table-col">{item.idolId}</td>
+              <td className="ig-view-table-col">{item.hamletVillage}</td>
+              <td className="ig-view-table-col">{item.place}</td>
+              <td className="ig-view-table-col">{item.type}</td>
+              <td className="ig-view-table-col">{item.date}</td>
+              <td className="ig-view-table-col">{item.status}</td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </table></div>
     </div>
   );
 }
