@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+
 const regions = {
   Coimbatore: {
     districts: {
@@ -14,7 +15,7 @@ const regions = {
       ],
     },
   },
-  Salem: {   
+  Salem: {
     districts: {
       'Salem': [
         { motherVillage: 'Salem', hamletVillage: ['Salem', 'Kandhampatty', 'Kannankurichi', 'Mettur', 'Omalur'] },
@@ -33,7 +34,7 @@ const initialItems = [
   { id: 3, idolId: 1234, hamletVillage: 'Thoppur', place: 'Ashram', type: 'Organisation', date: '2024-08-22', status: 'INCOMPLETE', district: 'Salem', region: 'Salem' },
 ];
 
-const filterData = (data, { selectedRegion, selectedDistrict, selectedPlace, selectedSubPlace, statusFilter, selectedDate }) => {
+const filterData = (data, { selectedRegion, selectedDistrict, selectedPlace, selectedSubPlace, typeFilter, statusFilter, selectedDate }) => {
   const regionData = regions[selectedRegion];
   const districtData = regionData?.districts[selectedDistrict] || [];
   const placeData = districtData.find(place => place.motherVillage === selectedPlace);
@@ -44,10 +45,12 @@ const filterData = (data, { selectedRegion, selectedDistrict, selectedPlace, sel
     (selectedDistrict === '' || item.district === selectedDistrict) &&
     (validLocations.length === 0 || validLocations.includes(item.hamletVillage)) &&
     (selectedSubPlace === '' || item.hamletVillage === selectedSubPlace) &&
+    (typeFilter === 'all' || item.type === typeFilter) &&
     (statusFilter === 'all' || item.status === statusFilter) &&
     (selectedDate === '' || item.date === selectedDate)
   );
 };
+
 const sortData = (data, sortField, sortOrder) => {
   if (!sortField) return data;
   return [...data].sort((a, b) => {
@@ -69,12 +72,17 @@ function App() {
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedPlace, setSelectedPlace] = useState('');
   const [selectedSubPlace, setSelectedSubPlace] = useState('');
+  const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedDate, setSelectedDate] = useState('');
 
   const handleSort = (field) => {
     setSortField(field);
     setSortOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
+  };
+
+  const handleTypeFilter = (event) => {
+    setTypeFilter(event.target.value);
   };
 
   const handleStatusFilter = (event) => {
@@ -108,8 +116,8 @@ function App() {
   };
 
   const filteredData = useMemo(() => 
-    filterData(tableData, { selectedRegion, selectedDistrict, selectedPlace, selectedSubPlace, statusFilter, selectedDate }), 
-    [tableData, selectedRegion, selectedDistrict, selectedPlace, selectedSubPlace, statusFilter, selectedDate]
+    filterData(tableData, { selectedRegion, selectedDistrict, selectedPlace, selectedSubPlace, typeFilter, statusFilter, selectedDate }), 
+    [tableData, selectedRegion, selectedDistrict, selectedPlace, selectedSubPlace, typeFilter, statusFilter, selectedDate]
   );
 
   const sortedData = useMemo(() => 
@@ -145,7 +153,7 @@ function App() {
           </select>
         </label>
         <label>
-          Division:
+          Sub-Division:
           <select value={selectedPlace} onChange={handlePlaceChange} disabled={!selectedDistrict}>
             <option value="">Select Division</option>
             {selectedDistrictData.map(place => (
@@ -160,6 +168,15 @@ function App() {
             {selectedPlaceData?.hamletVillage.map(subPlace => (
               <option key={subPlace} value={subPlace}>{subPlace}</option>
             ))}
+          </select>
+        </label>
+        <label>
+          Type:
+          <select value={typeFilter} onChange={handleTypeFilter}>
+            <option value="all">All</option>
+            <option value="Private">Private</option>
+            <option value="Public">Public</option>
+            <option value="Organisation">Organisation</option>
           </select>
         </label>
         <label>
@@ -180,10 +197,10 @@ function App() {
           <tr>
             <th onClick={() => handleSort('id')}>ID</th>
             <th onClick={() => handleSort('idolId')}>Idol ID</th>
-            <th onClick={() => handleSort('hamletVillage')}>Hamlet Village</th>
-            <th onClick={() => handleSort('place')}>Place</th>
+            <th onClick={() => handleSort('hamletVillage')}>Location of Installation</th>
+            <th onClick={() => handleSort('place')}>Place of Immersion</th>
             <th onClick={() => handleSort('type')}>Type</th>
-            <th onClick={() => handleSort('date')}>Date</th>
+            <th onClick={() => handleSort('date')}>Date of Immersion</th>
             <th onClick={() => handleSort('status')}>Status</th>
           </tr>
         </thead>
